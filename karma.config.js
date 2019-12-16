@@ -1,3 +1,5 @@
+const path = require('path');
+
 const webpackConfig = require('./webpack.config');
 
 const ENV = process.env.npm_lifecycle_event;
@@ -83,7 +85,7 @@ module.exports = function karmaConfig(config) {
         wpConfig.reporters.push('coverage');
 
         wpConfig.coverageReporter = {
-            dir: require('path').join(__dirname, 'coverage'),
+            dir: path.join(__dirname, 'coverage'),
             reporters: [
                 { type: 'text' },
                 { type: 'text-summary' },
