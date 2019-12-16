@@ -9,7 +9,6 @@ export function getWavFmtInfo(reader, chunkSize) {
 
     const formatId = reader.uint16();
 
-
     if (!Object.prototype.hasOwnProperty.call(formats, formatId)) {
         throw new Error(`Unsupported format in WAV: 0x${formatId.toString(16)}`);
     }
@@ -30,7 +29,7 @@ export function getWavFmtInfo(reader, chunkSize) {
     meta.readerMethodName = `pcm${meta.bitDepth}${decoderOption}`;
 
     if (!reader[meta.readerMethodName]) {
-        throw new Error(`Unsupported bit depth in WAV: ${meta.bitDepth}`);
+        throw new Error(`Unsupported bit depth in WAV: ${meta.bitDepth} (${meta.readerMethodName})`);
     }
 
     return meta;

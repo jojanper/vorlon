@@ -6,9 +6,9 @@ const readBuffer = new ArrayBuffer(NSIZE);
 const writeView = new Uint8Array(readBuffer);
 
 // Add 'fmt' chunk data
-function fillFmtInfo(view, offset) {
+function fillFmtInfo(view, offset, formatId = 1) {
     // Format ID
-    view[offset + 0] = 1;
+    view[offset + 0] = formatId;
     view[offset + 1] = 0;
 
     // Number of channels (2)
@@ -214,6 +214,10 @@ describe('getWavFmtInfo', () => {
         reader = new DataReader(dataView);
     });
 
+    afterEach(() => {
+        writeView.fill(0);
+    });
+
     it('unsupported format is found', () => {
         writeView[0] = 0;
         writeView[1] = 1;
@@ -239,13 +243,25 @@ describe('getWavFmtInfo', () => {
         expect(info.readerMethodName).toEqual('pcm16');
 
         reader.reset();
+    });
 
+    it('64-bit sample depth is not supported', () => {
         // GIVEN invalid bit depth
+        const size = fillFmtInfo(writeView, 0);
         writeView[14] = 64;
         writeView[15] = 0;
 
         // WHEN parsing data
         // THEN error should be thrown
-        expect(() => getWavFmtInfo(reader, size)).toThrowError(Error, 'Unsupported bit depth in WAV: 64');
+        expect(() => getWavFmtInfo(reader, size)).toThrowError(Error, 'Unsupported bit depth in WAV: 64 (pcm64)');
+    });
+
+    it('16-bit floating point sample depth is not supported', () => {
+        // GIVEN floating point fmt data
+        const size = fillFmtInfo(writeView, 0, 3);
+
+        // WHEN parsing data
+        // THEN error should be thrown
+        expect(() => getWavFmtInfo(reader, size)).toThrowError(Error, 'Unsupported bit depth in WAV: 16 (pcm16f)');
     });
 });
