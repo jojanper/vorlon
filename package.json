@@ -1,0 +1,98 @@
+{
+  "name": "vorlon",
+  "version": "0.0.1",
+  "description": "Audio decoding engine for the Web",
+  "main": "index.js",
+  "scripts": {
+    "build-dev": "npm run webpack",
+    "build-prod": "npm run webpack -- --env=production",
+    "lint": "eslint '*.js' './src/**/*.js'",
+    "test": "NODE_ENV=test karma start karma.config.js",
+    "webpack": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jojanper/vorlon.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "WebAssembly"
+  ],
+  "author": "Juha Ojanperä <juha.ojanpera@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jojanper/vorlon/issues"
+  },
+  "homepage": "https://github.com/jojanper/vorlon#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-istanbul": "^5.2.0",
+    "@babel/preset-env": "^7.7.6",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.1",
+    "karma-coverage-istanbul-reporter": "^2.1.1",
+    "karma-jasmine": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^4.0.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "rules": {
+      "arrow-parens": [
+        "error",
+        "as-needed",
+        {
+          "requireForBlockBody": true
+        }
+      ],
+      "comma-dangle": 0,
+      "consistent-return": 0,
+      "no-param-reassign": 0,
+      "no-underscore-dangle": 0,
+      "no-shadow": 0,
+      "no-console": 0,
+      "no-plusplus": 0,
+      "object-curly-spacing": 0,
+      "indent": [
+        "error",
+        4,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "import/no-extraneous-dependencies": [
+        0
+      ],
+      "import/no-unresolved": [
+        0
+      ],
+      "import/prefer-default-export": [
+        0
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 135
+        }
+      ],
+      "max-classes-per-file": 0
+    },
+    "env": {
+      "node": true,
+      "jasmine": true
+    },
+    "globals": {
+      "describe": true,
+      "expect": true,
+      "Worker": true
+    }
+  }
+}
