@@ -83,10 +83,11 @@ module.exports = function karmaConfig(config) {
         wpConfig.reporters.push('coverage');
 
         wpConfig.coverageReporter = {
-            dir: 'coverage/',
+            dir: require('path').join(__dirname, 'coverage'),
             reporters: [
                 { type: 'text' },
-                { type: 'text-summary' }
+                { type: 'text-summary' },
+                { type: 'lcovonly' }
             ]
         };
     }

@@ -21,10 +21,9 @@ before_install:
   - node --version
   - npm --version
   - "export DISPLAY=:99.0"
-#  - pip install --user codecov
-#after_success:
-#  - npm run coverage_lcov
-#  - codecov
+  - pip install --user codecov
+after_success:
+  - codecov
 script:
   # Run code styling and unit tests
   - npm run lint
