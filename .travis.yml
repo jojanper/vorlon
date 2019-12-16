@@ -1,0 +1,34 @@
+sudo: required
+language: node_js
+os:
+  - linux
+node_js:
+  - "12"
+services:
+  - xvfb
+addons:
+  chrome: stable
+before_script:
+  - >-
+    LATEST_CHROMEDRIVER_VERSION=`curl -s
+    "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"`
+  - >-
+    curl
+    "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+    -O
+  - unzip chromedriver_linux64.zip -d ~/bin
+before_install:
+  - node --version
+  - npm --version
+  - "export DISPLAY=:99.0"
+#  - pip install --user codecov
+#after_success:
+#  - npm run coverage_lcov
+#  - codecov
+script:
+  # Run code styling and unit tests
+  - npm run lint
+  - npm run test
+  # Create distribution bundles
+  - npm run build-dev
+  - npm run build-prod
