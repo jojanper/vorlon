@@ -2,10 +2,10 @@
   "name": "vorlon",
   "version": "0.0.1",
   "description": "Audio decoding engine for the Web",
-  "main": "index.js",
   "scripts": {
-    "build-dev": "npm run webpack",
-    "build-prod": "npm run webpack -- --env=production",
+    "build-dev": "npm run webpack -- --folder=dist",
+    "build-prod": "npm run webpack -- --env=production --folder=dist",
+    "build-release": "npm run build-dev && npm run build-prod",
     "lint": "eslint '*.js' './src/**/*.js'",
     "test": "NODE_ENV=test karma start karma.config.js",
     "webpack": "webpack --config webpack.config.js"
@@ -41,6 +41,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
+    "minimist": "^1.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
   },

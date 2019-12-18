@@ -6,9 +6,7 @@ describe('Audio web worker', () => {
     });
 
     afterEach(() => {
-        if (worker) {
-            worker.terminate();
-        }
+        worker.terminate();
     });
 
     it('decoding fails', (done) => {
