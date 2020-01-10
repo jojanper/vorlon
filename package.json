@@ -6,7 +6,9 @@
     "build-dev": "npm run webpack -- --folder=dist",
     "build-prod": "npm run webpack -- --env=production --folder=dist",
     "build-release": "npm run build-dev && npm run build-prod",
+    "http-server": "http-server",
     "lint": "eslint '*.js' './src/**/*.js'",
+    "serve-build": "npm run http-server -- dist --p 4200",
     "test": "NODE_ENV=test karma start karma.config.js",
     "webpack": "webpack --config webpack.config.js"
   },
@@ -26,6 +28,9 @@
   "homepage": "https://github.com/jojanper/vorlon#readme",
   "devDependencies": {
     "@babel/core": "^7.7.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/runtime": "^7.7.7",
     "babel-loader": "^8.0.6",
     "babel-plugin-istanbul": "^5.2.0",
     "@babel/preset-env": "^7.7.6",
@@ -33,6 +38,7 @@
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.19.1",
+    "http-server": "latest",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.1",
