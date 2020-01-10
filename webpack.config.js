@@ -25,7 +25,7 @@ function config(env) {
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            envName: 'legacy'
+                            envName: 'test'
                         }
                     }
                 }
