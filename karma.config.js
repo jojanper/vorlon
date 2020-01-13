@@ -31,7 +31,7 @@ module.exports = function karmaConfig(config) {
             'src/**/!(*spec).js': ['webpack', 'sourcemap'],
         },
 
-        webpack: webpackConfig(),
+        webpack: webpackConfig('test'),
 
         webpackMiddleware: {
             // webpack-dev-middleware configuration

@@ -8,7 +8,7 @@
     "build-release": "npm run build-dev && npm run build-prod",
     "http-server": "http-server",
     "lint": "eslint '*.js' './src/**/*.js'",
-    "serve-build": "npm run http-server -- dist --p 4200",
+    "serve-build": "npm run http-server -- . --p 4200",
     "test": "NODE_ENV=test karma start karma.config.js",
     "webpack": "webpack --config webpack.config.js"
   },
