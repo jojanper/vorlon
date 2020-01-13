@@ -2,7 +2,7 @@ import { eventHandler } from './entry';
 
 
 describe('Audio web worker entry', () => {
-    afterEach(done => {
+    afterEach((done) => {
         // Close decoder handle
         eventHandler({
             data: {
