@@ -2,6 +2,15 @@ import { eventHandler } from './entry';
 
 
 describe('Audio web worker entry', () => {
+    afterEach((done) => {
+        // Close decoder handle
+        eventHandler({
+            data: {
+                name: 'close'
+            }
+        }, done);
+    });
+
     it('Unsupported event type', (done) => {
         // GIVEN unsupported decoder event type
         const config = {
