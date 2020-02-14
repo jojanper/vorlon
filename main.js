@@ -16,44 +16,73 @@ function startDecoding(worker, stream, chunkSize) {
         worker.postMessage({ name: 'eos' });
     });
 
+    /*
+    stream.on('data', (chunk) => {
+        console.log(chunk.length);
+        worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } });
+    });
+    */
+
+    stream.on('readable', () => {
+        let data;
+
+        while (data = stream.read()) {
+            console.log(data.length);
+            worker.postMessage({ name: 'decode', data: { decode: data.buffer } });
+        }
+    });
+
+    /*
+    let counter = 0;
     stream.on('readable', () => {
         let chunk;
 
-        //console.log('READABLE');
+        counter++;
+        console.log('READABLE', counter);
 
         // Read fixed size data and pass for decoding
+        *
         while ((chunk = stream.read(chunkSize))) {
+            console.log(chunk.length);
             worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } });
         }
+        *
 
-        /*
         do {
             chunk = stream.read(chunkSize);
-            console.log(chunk);
+            //console.log(chunk);
             //worker.postMessage({ type: 'data', data: chunk });
-            worker.postMessage({name: 'decode', data: {decode: chunk.buffer}});
+            if (chunk) {
+                worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } });
+            }
         } while (chunk);
-        */
+
+        counter--;
+        console.log('done');
 
         // Read remaining data and pass for decoding + signal EOS
+        /*
         while ((chunk = stream.read())) {
+            console.log('1', chunk.length);
             worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } });
         }
+        *
 
         //console.log('End of stream found');
         //worker.postMessage({ name: 'eos' });
 
-        /*
         do {
             chunk = stream.read();
             //worker.postMessage({ type: 'data', data: chunk });
-            worker.postMessage({name: 'decode', data: {decode: chunk.buffer}});
+            if (chunk) {
+                worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } });
+            }
             //if (chunk) {
             //    worker.postMessage({ type: 'eos' });
             //}
         } while (chunk);
-        */
     });
+    */
 }
 
 if (!input) {
@@ -66,7 +95,7 @@ if (!output) {
 
 const stream = fs.createReadStream(input);
 const outStream = fs.createWriteStream(output);
-const chunkSize = 32 * 1024;
+const chunkSize = 64 * 1024;
 
 // Start Web Worker and pass the library name as input
 const worker = new Worker('./src/node_worker.js');
@@ -98,7 +127,13 @@ worker.on('message', message => {
         worker.unref();
     } else if (message.channelData) {
         //const data = message.channelData.map(arrBuffer => new Float32Array(arrBuffer));
-        const channelData = new Uint16Array(message.length * message.numChannels);
+
+        const arrData = new ArrayBuffer(message.length * message.numChannels * 2);
+        const channelData = new Int16Array(arrData);
+
+        //console.log(arrData.byteLength, channelData.length);
+
+        //const channelData = new Uint16Array(message.length * message.numChannels);
 
         //console.log(message);
         //console.log(channelData.length);
@@ -124,6 +159,8 @@ worker.on('message', message => {
         const dataView1 = new DataView(message.channelData[1]);
         const reader1 = new DataReader(dataView1);
 
+        //console.log(reader0.remain(), reader1.remain());
+
         let index = 0;
         for (let i = 0; i < message.length; i++) {
             //for (let ch = 0; ch < message.numChannels; ch++) {
@@ -131,13 +168,15 @@ worker.on('message', message => {
             //console.log(ch, i, index);
             //channelData[index] = 32768 * message.channelData[ch][i];//data[ch][i];
             //channelData[index] = Math.round(32768 * data[ch][i]);
-            channelData[index] = Math.round(32768 * reader0.pcm32f(false));
+            channelData[index] = Math.round(32768 * reader0.pcm32f());
             index++;
 
-            channelData[index] = Math.round(32768 * reader1.pcm32f(false));
+            channelData[index] = Math.round(32768 * reader1.pcm32f());
             index++;
             //}
         }
+
+        //console.log(reader0.remain(), reader1.remain());
 
         //console.log(index, channelData.length, channelData.byteLength);
 
@@ -145,7 +184,10 @@ worker.on('message', message => {
         console.log(channelData.length, index, channelData.byteLength, message.length, message.numChannels);
         // Decoded audio samples
         //const slicedData = channelData.slice(0, index);
-        outStream.write(Buffer.from(channelData.buffer, 0, index));
+        //outStream.write(Buffer.from(arrData/*channelData.buffer*/, 0, arrData.byteLength / 2));
+        outStream.write(Buffer.from(arrData));
+        //console.log(arrData.buffer);
+        //outStream.write(arrData.buffer);
 
         //channelData = message.channelData.map(arrBuffer => new Float32Array(arrBuffer));
     }
