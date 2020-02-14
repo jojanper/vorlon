@@ -29,7 +29,7 @@ if (!output) {
 const stream = fs.createReadStream(input);
 const outStream = fs.createWriteStream(output);
 
-// Start Web Worker and pass the library name as input
+// Start decoder as Web Worker
 const worker = new Worker('./src/node_worker.js');
 
 worker.on('error', (err) => { throw err; });
