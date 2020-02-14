@@ -11,7 +11,10 @@ const { DataReader } = require('./src/worker/data');
 const { input, output } = argv;
 
 function startDecoding(worker, stream) {
+    // No more data available for decoding -> signal end-of-stream to worker
     stream.on('end', () => worker.postMessage({ name: 'eos' }));
+
+    // New audio data available for decoding -> signal data to worker
     stream.on('data', chunk => worker.postMessage({ name: 'decode', data: { decode: chunk.buffer } }));
 }
 
@@ -29,10 +32,10 @@ const outStream = fs.createWriteStream(output);
 // Start Web Worker and pass the library name as input
 const worker = new Worker('./src/node_worker.js');
 
-worker.on('error', err => { throw err; });
+worker.on('error', (err) => { throw err; });
 
 // Handle messages from worker
-worker.on('message', message => {
+worker.on('message', (message) => {
     if (!message) {
         return;
     }
@@ -54,11 +57,14 @@ worker.on('message', message => {
         outStream.end();
         worker.unref();
     } else if (message.channelData) {
+        // Output buffer as 16-bit integer
         const arrData = new ArrayBuffer(message.length * message.numChannels * 2);
         const channelData = new Int16Array(arrData);
 
+        // Channel data readers
         const channelReaders = message.channelData.map(item => new DataReader(new DataView(item)));
 
+        // Convert floating point samples to 16-bit integer
         for (let i = 0, index = 0; i < message.length; i++) {
             for (let ch = 0; ch < message.numChannels; ch++) {
                 channelData[index] = Math.round(32768 * channelReaders[ch].pcm32f());

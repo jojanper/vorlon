@@ -22,6 +22,7 @@ module.exports = function karmaConfig(config) {
 
         // list of files to exclude
         exclude: [
+            'src/**/node_worker.js',
         ],
 
         // preprocess matching files before serving them to the browser

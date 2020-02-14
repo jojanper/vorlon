@@ -1,7 +1,7 @@
 const { parentPort } = require('worker_threads');
 
 require('babel-register')({
-    presets: [ 'es2015' ]
+    presets: ['es2015']
 });
 
 const { eventHandler } = require('./worker/entry');
@@ -10,4 +10,4 @@ const { eventHandler } = require('./worker/entry');
 parentPort.postMessage({ ready: true });
 
 // Handle messages to/from worker
-parentPort.onmessage = event => eventHandler(event, (data) => parentPort.postMessage(data));
+parentPort.onmessage = event => eventHandler(event, data => parentPort.postMessage(data));
