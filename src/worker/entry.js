@@ -24,6 +24,7 @@ function errorHandler(msg, callback) {
 class AudioDecoderEventHandler {
     constructor() {
         this.decoder = null;
+        this.eos = false;
     }
 
     // Entry point for event handling
@@ -69,6 +70,12 @@ class AudioDecoderEventHandler {
             const decoded = this.decoder.decode(data.decode);
             callback(decoded);
         }
+    }
+
+    // End of stream
+    _eosHandler(data, callback) {
+        this.eos = true;
+        callback({ eos: true });
     }
 
     // Close decoder
