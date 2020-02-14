@@ -25,6 +25,20 @@ describe('Audio web worker entry', () => {
         });
     });
 
+    it('End-of-stream', (done) => {
+        const eos = {
+            name: 'eos',
+        };
+
+        // GIVEN end-of-stream occured
+        // WHEN passing information to decoder
+        eventHandler({ data: eos }, (event) => {
+            // THEN acknowledge message is received
+            expect(event.eos).toEqual(true);
+            done();
+        });
+    });
+
     it('Unsupported mime type', (done) => {
         // GIVEN unsupported decoder configuration data
         const config = {
