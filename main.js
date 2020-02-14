@@ -97,7 +97,7 @@ worker.on('message', message => {
         outStream.end();
         worker.unref();
     } else if (message.channelData) {
-        const data = message.channelData.map(arrBuffer => new Float32Array(arrBuffer));
+        //const data = message.channelData.map(arrBuffer => new Float32Array(arrBuffer));
         const channelData = new Uint16Array(message.length * message.numChannels);
 
         //console.log(message);
@@ -131,16 +131,18 @@ worker.on('message', message => {
             //console.log(ch, i, index);
             //channelData[index] = 32768 * message.channelData[ch][i];//data[ch][i];
             //channelData[index] = Math.round(32768 * data[ch][i]);
-            channelData[index] = Math.round(32768 * reader0.pcm32f());
+            channelData[index] = Math.round(32768 * reader0.pcm32f(false));
             index++;
 
-            channelData[index] = Math.round(32768 * reader1.pcm32f());
+            channelData[index] = Math.round(32768 * reader1.pcm32f(false));
             index++;
             //}
         }
 
+        //console.log(index, channelData.length, channelData.byteLength);
+
         //console.log(message.length, message.numChannels, message.sampleRate);
-        //console.log(channelData.length, index, channelData.byteLength, message.length, message.numChannels);
+        console.log(channelData.length, index, channelData.byteLength, message.length, message.numChannels);
         // Decoded audio samples
         //const slicedData = channelData.slice(0, index);
         outStream.write(Buffer.from(channelData.buffer, 0, index));
