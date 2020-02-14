@@ -57,7 +57,6 @@ export class PcmDecoder {
     }
 
     decode(arrayBuffer) {
-        //console.log(arrayBuffer.byteLength);
         const dataView = new DataView(arrayBuffer);
 
         const reader = new DataReader(dataView);
@@ -72,8 +71,6 @@ export class PcmDecoder {
         for (let ch = 0; ch < this.numberOfChannels; ch++) {
             channelData[ch] = new Float32Array(length);
         }
-
-        console.log(length, chunkSize, this.blockSize, channelData[0].length);
 
         const read = reader[this.readerMethodName].bind(reader);
 
