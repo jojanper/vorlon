@@ -1,5 +1,5 @@
 import { WavDecoder, PcmDecoder } from './wav';
-
+import { EventEmitter } from './events';
 
 // Available audio decoders according to (MIME) types
 const DECODER_TYPES = {
@@ -17,7 +17,7 @@ const DECODER_TYPES = {
 };
 
 function errorHandler(msg, callback) {
-    callback({ error: msg });
+    callback(EventEmitter.createErrorEvent(msg));
 }
 
 // Handle events related to audio decoding
