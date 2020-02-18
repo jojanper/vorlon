@@ -1,12 +1,17 @@
+import { EventReceiver } from './events';
+
 describe('Audio web worker', () => {
     let worker;
+    let receiver;
 
     beforeEach(() => {
         worker = new Worker('/base/src/worker/worker.js');
+        receiver = new EventReceiver(worker);
     });
 
     afterEach(() => {
         worker.terminate();
+        receiver.clear();
     });
 
     it('decoding fails', (done) => {
@@ -31,13 +36,6 @@ describe('Audio web worker', () => {
     });
 
     it('unsupported mime type', (done) => {
-        worker.onmessage = (event) => {
-            console.log(event);
-            // THEN error message should be received
-            expect(event.data.error).toEqual('Unsupported mime type foo');
-            done();
-        };
-
         // GIVEN invalid mime type has been specified for the codec
         const data = {
             name: 'config',
@@ -46,6 +44,12 @@ describe('Audio web worker', () => {
 
         // WHEN initializing decoder
         worker.postMessage(data);
+
+        receiver.on('error', (message) => {
+            // THEN error message should be received
+            expect(message).toEqual('Unsupported mime type foo');
+            done();
+        });
     });
 
     it('decoder init data is set', (done) => {

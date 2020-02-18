@@ -86,7 +86,7 @@ class AudioDecoderEventHandler {
 
         this.decoder = null;
 
-        callback();
+        callback({ closed: true });
     }
 }
 
