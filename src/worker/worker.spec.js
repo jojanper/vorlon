@@ -1,4 +1,4 @@
-import { EventReceiver } from './events';
+import { EventReceiver, EVENTS } from './events';
 
 describe('Audio web worker', () => {
     let worker;
@@ -21,12 +21,11 @@ describe('Audio web worker', () => {
             data: { mime: 'audio/pcm' }
         });
 
-        worker.onerror = (err) => {
+        receiver.on(EVENTS.WORKER_ERROR, (err) => {
             // THEN decoding should fail
-            err.preventDefault();
             expect(err).toBeDefined();
             done();
-        };
+        });
 
         // WHEN invalid data is sent to PCM decoder
         worker.postMessage({
@@ -45,7 +44,7 @@ describe('Audio web worker', () => {
         // WHEN initializing decoder
         worker.postMessage(data);
 
-        receiver.on('error', (message) => {
+        receiver.on(EVENTS.ERROR, (message) => {
             // THEN error message should be received
             expect(message).toEqual('Unsupported mime type foo');
             done();
@@ -53,12 +52,12 @@ describe('Audio web worker', () => {
     });
 
     it('decoder init data is set', (done) => {
-        worker.onmessage = (event) => {
+        receiver.on(EVENTS.CONFIG, (config) => {
             // THEN message should be sent to indicate successfull initialization
-            expect(event.data.config.sampleRate).toEqual(48000);
-            expect(event.data.config.numberOfChannels).toEqual(2);
+            expect(config.sampleRate).toEqual(48000);
+            expect(config.numberOfChannels).toEqual(2);
             done();
-        };
+        });
 
         // GIVEN PCM decoder configuration data
         const data = {

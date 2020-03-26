@@ -34,23 +34,28 @@ const worker = new Worker('./src/node_worker.js');
 
 worker.on('error', (err) => { throw err; });
 
+if (worker.on) {
+    console.log('ON');
+}
+
 // Handle messages from worker
 worker.on('message', (message) => {
     if (!message) {
         return;
     }
 
-    if (message.ready) {
+    if (message.config) {
+        // Decoder is configured and ready to receive data
+        console.log('Start decoding');
+        console.log(message.config);
+        startDecoding(worker, stream);
+    } else if (message.ready) {
         worker.postMessage({
             name: 'config',
             data: {
                 mime: 'audio/wav'
             }
         });
-
-        // Decoder is ready to receive data
-        console.log('Start decoding');
-        startDecoding(worker, stream);
     } else if (message.eos) {
         // Worker signalled that end-of-stream has been encountered
         worker.postMessage({ type: 'close' });
